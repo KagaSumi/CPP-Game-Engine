@@ -1,0 +1,66 @@
+//
+// Created by Curry on 2026-01-21.
+//
+
+#ifndef PROJECT_WORLD_H
+#define PROJECT_WORLD_H
+#include <memory>
+#include <vector>
+
+#include "CollisionSystem.h"
+#include "Entity.h"
+#include "EventManager.h"
+#include "KeyboardInputSystem.h"
+#include "Map.h"
+#include "MovementSystem.h"
+#include "RenderSystem.h"
+
+void printCollision(const CollisionEvent& collision);
+
+class World {
+    Map map;
+    std::vector<std::unique_ptr<Entity>> entities;
+    MovementSystem movementSystem;
+    RenderSystem renderSystem;
+    KeyboardInputSystem keyboardInputSystem;
+    CollisionSystem collisionSystem;
+    EventManager eventManager;
+
+    public:
+    World();
+    void update(float dt, const SDL_Event& event) {
+        keyboardInputSystem.update(entities, event);
+        movementSystem.update(entities, dt);
+        collisionSystem.update(*this);
+        cleanup();
+    }
+
+    void render() {
+        map.draw();
+        renderSystem.render(entities);
+    }
+
+    Entity& createEntity() {
+        //emplace instead of push so no copy is created
+        entities.emplace_back(std::make_unique<Entity>());
+        return *entities.back();
+    }
+
+    std::vector<std::unique_ptr<Entity>>& getEntities() {
+        return entities;
+    }
+
+    void cleanup() {
+        //use a lambda predicate to remove all inactive entities
+        std::erase_if(
+            entities,
+            [](std::unique_ptr<Entity>& e) {
+                return !e->isActive();
+            });
+    }
+
+    EventManager& getEventManager() {return eventManager;}
+    Map& getMap(){return map;}
+};
+
+#endif //PROJECT_WORLD_H
