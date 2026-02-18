@@ -97,6 +97,12 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
     // itemCollider.rect.w = itemDest.w;
     // itemCollider.rect.h = itemDest.h;
 
+    auto& cam = world.createEntity();
+    SDL_FRect camView{};
+    camView.w = width;
+    camView.h = height;
+    cam.addComponent<Camera>(camView, static_cast<float>(world.getMap().width * 32), static_cast<float>(world.getMap().height * 32));
+
 
     auto& player(world.createEntity());
     auto& playerTransform = player.addComponent<Transform>(Vector2D(0,0),1.0f);
@@ -114,6 +120,8 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
     auto& playerCollider = player.addComponent<Collider>("player");
     playerCollider.rect.w = playerDst.w;
     playerCollider.rect.h = playerDst.h;
+
+    player.addComponent<PlayerTag>();
 
 }
 
