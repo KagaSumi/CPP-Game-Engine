@@ -21,6 +21,13 @@ class RenderSystem {
                 sprite.dst.x = t.position.x;
                 sprite.dst.y = t.position.y;
                 TextureManager::draw(sprite.Texture,sprite.src,sprite.dst);
+
+
+                //if entity has animation, update souce rect
+                if (entity->hasComponent<Animation>()) {
+                    auto anim = entity->getComponent<Animation>();
+                    sprite.src = anim.clips[anim.currentClip].frameIndicies[anim.currentFrame];
+                }
             }
         }
     }

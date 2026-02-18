@@ -8,6 +8,9 @@
 
 #include "Vector2D.h"
 #include <string>
+#include <unordered_map>
+
+#include "AnimationClip.h"
 
 struct Transform {
     Vector2D position{};
@@ -38,5 +41,14 @@ struct Collider {
     std::string tag;
     SDL_FRect rect{};
 };
+
+struct Animation {
+    std::unordered_map<std::string, AnimationClip> clips{};
+    std::string currentClip{};
+    float time{}; //time is accumulated for the current frame
+    int currentFrame{}; //index of current frame in the clip
+    float speed = 0.1f; //Time per frame
+};
+
 
 #endif //PROJECT_COMPONENTS_H

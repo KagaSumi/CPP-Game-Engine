@@ -32,6 +32,7 @@ add_executable(Project src/main.cpp
         src/ecs/system/ColisionSystem.cpp
         src/ecs/World.cpp
         src/vendor/tinyxml2.cpp
+        src/AssetManager.cpp
 )
 
 target_link_libraries(Project

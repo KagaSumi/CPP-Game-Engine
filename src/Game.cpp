@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "AssetManager.h"
 #include "Components.h"
 #include "TextureManager.h"
 
@@ -29,7 +30,7 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
 
     //Initialize SDL library
     if (SDL_InitSubSystem(SDL_INIT_VIDEO) == 1) {
-        std::cout <<"Subsystem initalized..." << std::endl;
+        std::cout <<"Subsystem initialized..." << std::endl;
         window = SDL_CreateWindow(title, width, height,flags);
 
         if (window) {
@@ -47,6 +48,8 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
     }else {
         isRunning = false;
     }
+
+    AssetManager::loadAnimation("player","../asset/animations/bull_animations.xml");
 
     //load map
     world.getMap().load("../asset/map.tmx",TextureManager::load("../asset/tileset.png"));
@@ -99,11 +102,15 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
     auto& playerTransform = player.addComponent<Transform>(Vector2D(0,0),1.0f);
     player.addComponent<Velocity>(Vector2D(0,0), 120.0f);
 
-    SDL_Texture* tex = TextureManager::load("../asset/mario.png");
-    SDL_FRect playerSrc {0,0,32,44};
-    SDL_FRect playerDst {playerTransform.position.x,playerTransform.position.y,64,88};
+    Animation anim = AssetManager::getAnimation("player");
+    player.addComponent<Animation>(anim);
 
+    SDL_Texture* tex = TextureManager::load("../asset/animations/bull_anim.png");
+    // SDL_FRect playerSrc {0,0,32,44};
+    SDL_FRect playerSrc = anim.clips[anim.currentClip].frameIndicies[0];
+    SDL_FRect playerDst {playerTransform.position.x,playerTransform.position.y,64,64};
     player.addComponent<Sprite>(tex,playerSrc,playerDst);
+
     auto& playerCollider = player.addComponent<Collider>("player");
     playerCollider.rect.w = playerDst.w;
     playerCollider.rect.h = playerDst.h;
