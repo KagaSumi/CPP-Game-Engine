@@ -5,9 +5,23 @@
 
 #include <iostream>
 
+#include "Game.h"
+
 World::World() {
     //subscribe to collision event
-    eventManager.subscribe<CollisionEvent>([](const CollisionEvent& collision){
+    eventManager.subscribe([this](const CollisionEvent& collision){
+
+        Entity* sceneStateEntity = nullptr;
+        //find scene state
+        for (auto& e: entities) {
+            if (e->hasComponent<SceneState>()) {
+                sceneStateEntity = e.get();
+                break;
+            }
+        }
+
+        if (!sceneStateEntity) return;
+
         if (collision.entityA == nullptr || collision.entityB == nullptr) return;
         if (!(collision.entityA->hasComponent<Collider>() && collision.entityB->hasComponent<Collider>())) return;
 
@@ -17,6 +31,7 @@ World::World() {
         Entity* player = nullptr;
         Entity* item = nullptr;
         Entity* wall = nullptr;
+        Entity* projectile = nullptr;
 
 
         if  (colliderA.tag == "player" && colliderB.tag == "item") {
@@ -29,6 +44,15 @@ World::World() {
 
         if (player && item) {
             item->destroy();
+            //scene state
+
+            auto& sceneState = sceneStateEntity->getComponent<SceneState>();
+            sceneState.coinsCollected++;
+
+            if (sceneState.coinsCollected > 1) {
+                Game::onSceneChangeRequest("level2");
+            }
+
         }
 
         //player vs wall.
@@ -44,9 +68,25 @@ World::World() {
             auto& t = player->getComponent<Transform>();
             t.position = t.oldPosition;
         }
-    });
 
-    //eventManager.subscribe<CollisionEvent>(printCollision);
+        //player vs projectile.
+        if  (colliderA.tag == "player" && colliderB.tag == "projectile") {
+            player = collision.entityA;
+            projectile = collision.entityB;
+        } else if (colliderA.tag == "projectile" && colliderB.tag == "player") {
+            player = collision.entityB;
+            projectile = collision.entityA;
+        }
+        if (player && projectile) {
+            player->destroy();
+            //change scenes defer
+
+            Game::onSceneChangeRequest("gameover");
+        }
+    });
+    //eventManager.subscribe(printCollision);
+
+
 }
 
 void printCollision(const CollisionEvent& collision) {

@@ -61,7 +61,7 @@ public:
                             newClip = "idle_down";
                     }
                 }
-
+                if (e->hasComponent<ProjectileTag>()) newClip = "idle_right";
                 //Check if the animations has switched
                 //if the chosen clip is different from the current one, switch to new clip, reset time and frame index
                 if (newClip != anim.currentClip) {

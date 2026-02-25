@@ -4,6 +4,7 @@
 
 #ifndef PROJECT_COMPONENTS_H
 #define PROJECT_COMPONENTS_H
+#include <functional>
 #include <SDL3/SDL_render.h>
 
 #include "Vector2D.h"
@@ -56,6 +57,18 @@ struct Camera {
     float worldHeight;
 };
 
+struct TimedSpawner {
+    float spawnInterval{};
+    std::function<void()> spawnCallback{};
+    float timer{};
+};
+
+//Game State, scene because might have multiple scenes
+struct SceneState {
+    int coinsCollected = 0;
+};
+
 struct PlayerTag{};
+struct ProjectileTag{};
 
 #endif //PROJECT_COMPONENTS_H

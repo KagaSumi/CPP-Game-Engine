@@ -10,6 +10,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include "World.h"
+#include "manager/SceneManager.h"
 
 class Game {
 public:
@@ -31,7 +32,10 @@ public:
         return isRunning;
     }
     SDL_Renderer* renderer = nullptr;
-    World world;
+
+    SceneManager sceneManager;
+
+    static std::function<void(std::string)> onSceneChangeRequest;
 
 private:
     int frameCount = 0;
