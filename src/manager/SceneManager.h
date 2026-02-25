@@ -40,10 +40,6 @@ class SceneManager {
 public:
     std::unique_ptr<Scene> currentScene;
     void loadScene(const char* sceneName, const char* mapPath, int windowWidth, int windowHeight) {
-        std::cout << "Scene Name: " << sceneName <<  std::endl;
-        std::cout << "Map Path:  " << mapPath <<  std::endl;
-        std::cout << "windowWidth: " << windowWidth << std::endl;
-        std::cout << "windowHeight:  " << windowHeight << std::endl;
         sceneParam[sceneName] = {sceneName, mapPath, windowWidth, windowHeight};
     }
 

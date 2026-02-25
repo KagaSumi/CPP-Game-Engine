@@ -30,7 +30,7 @@
   <object id="4" x="778" y="83" width="167" height="162"/>
   <object id="5" x="9" y="175" width="753" height="74"/>
  </objectgroup>
- <objectgroup id="4" name="Item Spawn Layer">
+ <objectgroup id="4" name="Item Layer">
   <object id="7" x="714" y="116">
    <point/>
   </object>

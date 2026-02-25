@@ -15,13 +15,13 @@ void Map::load(const char *path, SDL_Texture *ts) {
     doc.LoadFile(path);
 
     //Parse width and height of map
-    auto* mapNode = doc.FirstChildElement("map");
+    auto *mapNode = doc.FirstChildElement("map");
     width = mapNode->IntAttribute("width");
     height = mapNode->IntAttribute("height");
 
     //parse terraindata
-    auto* layer = mapNode->FirstChildElement("layer");
-    auto* data = layer->FirstChildElement("data");
+    auto *layer = mapNode->FirstChildElement("layer");
+    auto *data = layer->FirstChildElement("data");
     std::string csv = data->GetText();
     std::stringstream ss(csv);
     tileData = std::vector(height, std::vector<int>(width));
@@ -29,45 +29,53 @@ void Map::load(const char *path, SDL_Texture *ts) {
         for (int j = 0; j < width; j++) {
             std::string val;
             //read characters from a ss into val until hits comma or end of string
-            if (!std::getline(ss, val, ',')) {break;}
+            if (!std::getline(ss, val, ',')) { break; }
             tileData[i][j] = std::stoi(val); //stoi is a string to integer converter
         }
     }
 
-    //parse collider data
-    auto* ObjectGroup = layer->NextSiblingElement("objectgroup");
-    //create a for loop with initialization, condition and an increment
-    for (auto* obj = ObjectGroup->FirstChildElement("object");
-        obj != nullptr;
-        obj = obj->NextSiblingElement("object")) {
-
-        Collider c;
-        c.rect.x = obj->FloatAttribute("x");
-        c.rect.y = obj->FloatAttribute("y");
-        c.rect.h = obj->FloatAttribute("height");
-        c.rect.w = obj->FloatAttribute("width");
-        colliders.push_back(c);
-    }
-
-    //parse coin data
-    auto* CoinGroup = ObjectGroup->NextSiblingElement("objectgroup");
-    for (auto* obj = CoinGroup->FirstChildElement("object");
-        obj != nullptr;
-        obj = obj->NextSiblingElement("object")) {
-        Collider c;
-        c.rect.x = obj->FloatAttribute("x");
-        c.rect.y = obj->FloatAttribute("y");
-        coins.push_back(c);
+    //for each object group after ^ then use name to determine
+    for (auto *objectGroup = mapNode->FirstChildElement("objectgroup");
+         objectGroup != nullptr;
+         objectGroup = objectGroup->NextSiblingElement("objectgroup")
+    ) {
+        std::string groupName = objectGroup->Attribute("name");
+        if (groupName == "Collision Layer") {
+            //parse collider data
+            //create a for loop with initialization, condition and an increment
+            for (auto *obj = objectGroup->FirstChildElement("object");
+                 obj != nullptr;
+                 obj = obj->NextSiblingElement("object")) {
+                Collider c;
+                c.rect.x = obj->FloatAttribute("x");
+                c.rect.y = obj->FloatAttribute("y");
+                c.rect.h = obj->FloatAttribute("height");
+                c.rect.w = obj->FloatAttribute("width");
+                colliders.push_back(c);
+            }
         }
+
+        if (groupName == "Item Layer")
+            //parse coin data
+        for (auto *obj = objectGroup->FirstChildElement("object");
+             obj != nullptr;
+             obj = obj->NextSiblingElement("object")) {
+            Collider c;
+            c.rect.x = obj->FloatAttribute("x");
+            c.rect.y = obj->FloatAttribute("y");
+            coins.push_back(c);
+        }
+    }
 }
+
 
 void Map::draw(const Camera &cam) {
     SDL_FRect src{}, dest{};
 
     dest.w = dest.h = 32;
 
-    for (int row =0; row<height; row++) {
-        for (int col =0; col<width; col++) {
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
             int type = tileData[row][col];
 
 
@@ -104,7 +112,7 @@ void Map::draw(const Camera &cam) {
                 default:
                     break;
             }
-            TextureManager::draw(tileset,src,dest);
+            TextureManager::draw(tileset, src, dest);
         }
     }
 }
