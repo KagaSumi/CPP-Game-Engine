@@ -34,6 +34,7 @@ add_executable(Project src/main.cpp
         src/vendor/tinyxml2.cpp
         src/manager/AssetManager.cpp
         src/manager/Scene.cpp
+        src/ecs/system/MouseInputSystem.cpp
 )
 
 target_link_libraries(Project

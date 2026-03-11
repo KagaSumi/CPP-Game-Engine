@@ -50,6 +50,7 @@ struct Sprite {
 struct Collider {
     std::string tag;
     SDL_FRect rect{};
+    bool enabled = true;
 };
 
 struct Animation {
