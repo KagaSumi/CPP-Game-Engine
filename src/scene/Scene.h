@@ -17,7 +17,6 @@ public:
 
     void update(const float dt, const SDL_Event &e) {
         world.update(dt,e,type);
-
     }
 
     void render() {
@@ -31,7 +30,15 @@ public:
 private:
     std::string name;
     SceneType type;
-    void createProjectile(Vector2D pos, Vector2D dir, int speed);
+    //void createProjectile(Vector2D pos, Vector2D dir, int speed);
+
+    void initMainMenu(int windowWidth, int windowHeight);
+    void initGameplay(const char* mapPath, int windowWidth, int windowHeight);
+
+    Entity& createSettingsOverlay(int windowWidth, int windowHeight);
+    Entity& createCogButton(int windowWidth, int windowHeight, Entity& overlay);
+    void createSettingsUIComponents(Entity& overlay);
+    void toggleSettingsOverlayVisibility(Entity& overlay);
 };
 
 #endif //PROJECT_SCENE_H

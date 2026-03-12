@@ -21,6 +21,8 @@
 #include "RenderSystem.h"
 #include "SpawnTimerSystem.h"
 #include "scene/SceneType.h"
+#include  "UIRenderSystem.h"
+#include  "MouseInputSystem.h"
 
 void printCollision(const CollisionEvent& collision);
 
@@ -39,6 +41,8 @@ class World {
     DestructionSystem destructionSystem;
     EventResponseSystem eventResponseSystem{*this};
     MainMenuSystem mainMenuSystem;
+    UIRenderSystem uiRenderSystem;
+    MouseInputSystem mouseInputSystem;
 
     public:
     World() = default;
@@ -55,6 +59,9 @@ class World {
             spawnTimerSystem.update(entities, dt);
             destructionSystem.update(entities);
         }
+
+        mouseInputSystem.update(*this,event);
+
         synchronizeEntities();
         cleanup();
     }
@@ -67,6 +74,7 @@ class World {
             }
         }
         renderSystem.render(entities);
+        uiRenderSystem.render(entities);
     }
 
     Entity& createEntity() {

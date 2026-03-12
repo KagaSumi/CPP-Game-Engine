@@ -13,8 +13,7 @@
 #include "TextureManager.h"
 
 class UIRenderSystem {
-
-    public:
+public:
     void render(const std::vector<std::unique_ptr<Entity>>& entities) {
         for (auto& e : entities) {
             if (e->hasComponent<Transform>() && e->hasComponent<Sprite>()) {

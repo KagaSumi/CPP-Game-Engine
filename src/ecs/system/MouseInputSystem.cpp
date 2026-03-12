@@ -30,7 +30,8 @@ void MouseInputSystem::update(World &world, const SDL_Event &event) {
             //Hover
             if (event.type == SDL_EVENT_MOUSE_MOTION) {
                 if (!inside && clickable.pressed) {
-                    //cancel
+                    //cancel event
+                    world.getEventManager().emit(MouseInteractionEvent{e.get(),MouseInteractionState::Cancel});
                 }
 
 
@@ -39,6 +40,7 @@ void MouseInputSystem::update(World &world, const SDL_Event &event) {
                         if (inside) {
                             clickable.pressed = true;
                             //pressed event
+                            world.getEventManager().emit(MouseInteractionEvent{e.get(),MouseInteractionState::Pressed});
                         }
                     }
                 }
@@ -49,6 +51,7 @@ void MouseInputSystem::update(World &world, const SDL_Event &event) {
                         if (inside) {
                             clickable.pressed = false;
                             //released event
+                            world.getEventManager().emit(MouseInteractionEvent{e.get(),MouseInteractionState::Released});
                         }
                     }
                 }

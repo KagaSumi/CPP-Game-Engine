@@ -9,10 +9,9 @@
 
 EventResponseSystem::EventResponseSystem(World &world) {
     //subscriptions
-    world.getEventManager().subscribe(
-        [this,&world](const BaseEvent &e) {
+    world.getEventManager().subscribe([this,&world](const BaseEvent &e) {
             if (e.type != EventType::Collision) return;
-            const auto &collision = static_cast<const CollisionEvent &>(e); //cast base type to collision type
+            const auto& collision = static_cast<const CollisionEvent &>(e); //cast base type to collision type
 
             onCollision(collision, "item", world);
             onCollision(collision, "wall", world);
@@ -21,13 +20,42 @@ EventResponseSystem::EventResponseSystem(World &world) {
 
 
     //Player Action subscriptions
-    // world.getEventManager().subscribe(
-    //     [this,&world](const BaseEvent &e) {
+    // world.getEventManager().subscribe([this,&world](const BaseEvent &e) {
     //         if (e.type != EventType::PlayerAction) return;
     //         const auto &playerAction = static_cast<const PlayerAction &>(e);
     //         //TODO onPlayerAction
     //     }
     // );
+
+
+    //Mouse Action subscriptions
+    world.getEventManager().subscribe([this,&world](const BaseEvent &e) {
+            if (e.type != EventType::MouseInteraction) return;
+            const auto &mouseEvent = static_cast<const MouseInteractionEvent &>(e);
+            onMouseInteraction(mouseEvent);
+        }
+    );
+}
+
+void EventResponseSystem::onMouseInteraction(const MouseInteractionEvent &e) {
+
+    if (!e.entity->hasComponent<Clickable>()) return;
+
+    auto& clickable = e.entity->getComponent<Clickable>();
+
+    switch (e.state) {
+        case MouseInteractionState::Pressed:
+            clickable.onPressed();
+            break;
+        case MouseInteractionState::Released:
+            clickable.onReleased();
+            break;
+        case MouseInteractionState::Cancel:
+            clickable.onCancel();
+            break;
+        default:
+            break;
+    }
 }
 
 void EventResponseSystem::onCollision(const CollisionEvent &e, const char *otherTag, World &world) {
