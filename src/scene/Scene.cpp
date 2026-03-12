@@ -2,12 +2,26 @@
 // Created by Curry on 2026-02-25.
 //
 
-#include  "Scene.h"
-#include  "AssetManager.h"
+#include "../scene/Scene.h"
+#include "../manager/AssetManager.h"
 #include "Game.h"
 
-Scene::Scene(const char *sceneName, const char *mapPath, int windowWidth, int windowHeight): name(sceneName) {
+Scene::Scene(SceneType sceneType, const char *sceneName, const char *mapPath, int windowWidth, int windowHeight): name(sceneName), type(sceneType){
 
+    if (sceneType == SceneType::MainMenu) {
+        //camera
+        auto& cam = world.createEntity();
+        cam.addComponent<Camera>();
+        //menu
+        auto& menu(world.createEntity());
+        auto menuTransform = menu.addComponent<Transform>(Vector2D(0,0),0.0f, 1.0f);
+
+        SDL_Texture *texture = TextureManager::load("../asset/menu.png");
+        SDL_FRect menuSrc {0,0,(float) windowWidth,(float) windowHeight};
+        SDL_FRect menuDst {menuTransform.position.x,menuTransform.position.y,menuSrc.w, menuSrc.h};
+        menu.addComponent<Sprite>(texture,menuSrc,menuDst);
+        return;
+    }
 
     //load map
     world.getMap().load(mapPath,TextureManager::load("../asset/tileset.png"));

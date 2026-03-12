@@ -32,9 +32,10 @@ add_executable(Project src/main.cpp
         src/ecs/system/CollisionSystem.cpp
         src/vendor/tinyxml2.cpp
         src/manager/AssetManager.cpp
-        src/manager/Scene.cpp
+        src/scene/Scene.cpp
         src/ecs/system/MouseInputSystem.cpp
         src/ecs/system/EventResponseSystem.cpp
+        src/ecs/system/MainMenuSystem.cpp
 )
 
 target_link_libraries(Project

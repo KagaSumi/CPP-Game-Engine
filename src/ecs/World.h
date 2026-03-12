@@ -15,10 +15,12 @@
 #include "EventResponseSystem.h"
 #include "event/EventManager.h"
 #include "KeyboardInputSystem.h"
+#include "MainMenuSystem.h"
 #include "Map.h"
 #include "MovementSystem.h"
 #include "RenderSystem.h"
 #include "SpawnTimerSystem.h"
+#include "scene/SceneType.h"
 
 void printCollision(const CollisionEvent& collision);
 
@@ -36,17 +38,23 @@ class World {
     SpawnTimerSystem spawnTimerSystem;
     DestructionSystem destructionSystem;
     EventResponseSystem eventResponseSystem{*this};
+    MainMenuSystem mainMenuSystem;
 
     public:
     World() = default;
-    void update(float dt, const SDL_Event& event) {
-        keyboardInputSystem.update(entities, event);
-        movementSystem.update(entities, dt);
-        collisionSystem.update(*this);
-        animationSystem.update(entities, dt);
-        cameraSystem.update(entities);
-        spawnTimerSystem.update(entities, dt);
-        destructionSystem.update(entities);
+    void update(float dt, const SDL_Event& event, const SceneType sceneType) {
+        if (sceneType == SceneType::MainMenu) {
+            //Main Menu Scene Update
+            mainMenuSystem.update(event);
+        }else {
+            keyboardInputSystem.update(entities, event);
+            movementSystem.update(entities, dt);
+            collisionSystem.update(*this);
+            animationSystem.update(entities, dt);
+            cameraSystem.update(entities);
+            spawnTimerSystem.update(entities, dt);
+            destructionSystem.update(entities);
+        }
         synchronizeEntities();
         cleanup();
     }
