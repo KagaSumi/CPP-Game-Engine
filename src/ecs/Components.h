@@ -78,6 +78,10 @@ struct SceneState {
     int coinsCollected = 0;
 };
 
+struct Health {
+    int currentHealth{};
+};
+
 struct Clickable {
     std::function<void()> onPressed{};
     std::function<void()> onReleased{};

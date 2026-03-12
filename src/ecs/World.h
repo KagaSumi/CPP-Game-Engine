@@ -12,7 +12,8 @@
 #include "CollisionSystem.h"
 #include "DestructionSystem.h"
 #include "Entity.h"
-#include "EventManager.h"
+#include "EventResponseSystem.h"
+#include "event/EventManager.h"
 #include "KeyboardInputSystem.h"
 #include "Map.h"
 #include "MovementSystem.h"
@@ -34,9 +35,10 @@ class World {
     EventManager eventManager;
     SpawnTimerSystem spawnTimerSystem;
     DestructionSystem destructionSystem;
+    EventResponseSystem eventResponseSystem{*this};
 
     public:
-    World();
+    World() = default;
     void update(float dt, const SDL_Event& event) {
         keyboardInputSystem.update(entities, event);
         movementSystem.update(entities, dt);

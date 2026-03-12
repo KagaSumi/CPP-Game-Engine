@@ -15,6 +15,7 @@
 
 //GameObject *player = nullptr;
 
+GameState Game::gameState{};
 std::function<void(std::string)> Game::onSceneChangeRequest;
 
 Game::Game() {}
@@ -58,6 +59,9 @@ void Game::init(const char *title, int width, int height, bool fullscreen) {
     //load scenes
     sceneManager.loadScene("level1","../asset/map.tmx",width,height);
     sceneManager.loadScene("level2","../asset/map2.tmx",width,height);
+
+    //init game data/state
+    gameState.playerHealth = 5;
 
     //start level 1
     sceneManager.changeSceneDeferred("level1");

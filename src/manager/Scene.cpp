@@ -4,6 +4,7 @@
 
 #include  "Scene.h"
 #include  "AssetManager.h"
+#include "Game.h"
 
 Scene::Scene(const char *sceneName, const char *mapPath, int windowWidth, int windowHeight): name(sceneName) {
 
@@ -79,6 +80,7 @@ Scene::Scene(const char *sceneName, const char *mapPath, int windowWidth, int wi
     playerCollider.rect.h = playerDst.h;
 
     player.addComponent<PlayerTag>();
+    player.addComponent<Health>(Game::gameState.playerHealth);
 
 
     auto& spawner(world.createEntity());
